@@ -144,26 +144,29 @@ class HorseTest {
 
     @Test
     public void moveUseMethodGetRandomDoubleWithParameters(){
-        MockedStatic<Horse> horseMockedStatic = mockStatic(Horse.class);
-        Horse horse = new Horse("Name", 20,200);
-        horse.move();
-        horseMockedStatic.verify(() -> Horse.getRandomDouble(0.2, 0.9));
+        try(MockedStatic<Horse> horseMockedStatic = mockStatic(Horse.class)) {
+            Horse horse = new Horse("Name", 20,200);
+            horse.move();
+            horseMockedStatic.verify(() -> Horse.getRandomDouble(0.2, 0.9));
+        }
+
     }
 
     @ParameterizedTest
-    @ValueSource(doubles = { 0.5, 0.6, 0.7 })
+    @ValueSource(doubles = {0.5, 0.6, 0.7})
     public void moveAssignsValueOfDistanceAccordingToCorrectFormula(double fakeValue){
-
+        double min = 0.2;
+        double max = 0.9;
         double speed = 20;
         double distance = 200;
         String name = "Name";
-        double expected = distance + speed * fakeValue;
-
 
         Horse horse = new Horse(name, speed, distance);
 
-        try (MockedStatic<Horse> horseMockedStatic = mockStatic(Horse.class);){
-            horseMockedStatic.when(()-> Horse.getRandomDouble(0.2,0.9)).thenReturn(fakeValue);
+        double expected = distance + speed * fakeValue;
+
+        try (MockedStatic<Horse> horseMockedStatic = mockStatic(Horse.class)){
+            horseMockedStatic.when(()-> Horse.getRandomDouble(min,max)).thenReturn(fakeValue);
             horse.move();
         }
 
